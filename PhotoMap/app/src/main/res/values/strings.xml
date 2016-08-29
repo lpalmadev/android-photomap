@@ -1,4 +1,47 @@
 <resources>
     <string name="app_name">PhotoMap</string>
+
+    <!-- Activities Titles -->
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_gallery">Gallery</string>
+
+    <!-- Action -->
+    <string name="action_camera">Take a photo</string>
+    <string name="action_gallery">Add from gallery</string>
+
+    <!-- Menu Elements -->
+    <string name="settings">Settings</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="new_image">Add Image</string>
+    <string name="cancel_menu">Cancel</string>
+    <string name="accept">Select</string>
+    <string name="refresh">Refresh</string>
+
+    <!-- DB -->
+    <string name="deleted">Photo removed</string>
+    <string name="error_deleted">Error removing photo</string>
+    <string name="exist">Photo already exists</string>
+    <string name="inserted">Photo inserted</string>
+    <string name="deletedAll">All photo removed</string>
+
+    <!-- Map -->
+    <string name="updated">Map updated</string>
+    <string name="drag">Set the new location</string>
+
+    <!-- Dialogs -->
+    <string name="titleDialog">No location found.</string>
+    <string name="titleLocation">Confirm location.</string>
+    <string name="titelFile">File not found</string>
+    <string name="titelFiles">No files found</string>
+    <string name="messageFile">Do you want to delete all file info?</string>
+    <string name="messageFiles">Do you want to delete file info?</string>
+    <string name="messageLocation">Are you sure with the current location?</string>
+    <string name="messageDialog">Do you want to set it manually?</string>
+    <string name="OK">OK</string>
+    <string name="Cancel">Cancel</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+
 </resources>
