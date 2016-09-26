@@ -39,7 +39,8 @@
             android:name=".ui.SplashActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".ui.PhotoListActivity" />
-        <activity android:name=".ui.AboutActivity"></activity>
+        <activity android:name=".ui.AboutActivity" />
+        <activity android:name=".ui.PhotoLocationActivity"></activity>
     </application>
 
 </manifest>

@@ -7,6 +7,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
@@ -21,11 +23,12 @@ import java.io.IOException;
 
 import mx.lpalma.photomap.R;
 import mx.lpalma.photomap.db.PhotoData;
+import mx.lpalma.photomap.dialog.LocationDialog;
 import mx.lpalma.photomap.helper.PhotoMarkerManager;
 import mx.lpalma.photomap.models.Photo;
 import mx.lpalma.photomap.ui.adapters.PhotoMapInfoAdapter;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, LocationDialog.Callback {
 
     public static final int TAKE_PICTURE = 100;
     public static final int SELECT_PICTURE = 200;
@@ -49,10 +52,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         btnAccion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 getActionIntent(TAKE_PICTURE);
             }
         });
+        //Snackbar snackbar = Snackbar.make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_SHORT);
+        //snackbar.show();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
@@ -81,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     new PhotoData().insert(getApplicationContext(), file);
                     updateMap();
                 } else {
-                    //showDialog(picturePath);
+                    showDialog(picturePath);
                     file = new Photo();
                     file.setPath(picturePath);
                 }
@@ -100,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     new PhotoData().insert(getApplicationContext(), file);
                     updateMap();
                 } else {
-                    //showDialog(picturePath);
+                    showDialog(picturePath);
                 }
             } catch (IOException e) {
                 Log.e("ERROR_RESULT", e.getMessage());
@@ -147,4 +152,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return picturePath;
     }
 
+    private void showDialog(String file) {
+        LocationDialog dialog = new LocationDialog();
+        dialog.setFile(file);
+        dialog.show(this.getFragmentManager(), "Dialog");
+    }
+
+    @Override
+    public void SetLocation(String file) {
+        Intent intent = new Intent(getApplicationContext(),
+                PhotoLocationActivity.class);
+        intent.putExtra("file", file);
+        startActivity(intent);
+    }
 }
