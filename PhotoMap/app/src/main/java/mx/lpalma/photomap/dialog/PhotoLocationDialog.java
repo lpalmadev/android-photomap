@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -15,13 +14,15 @@ import mx.lpalma.photomap.R;
 /**
  * Created by lpalma on 28/08/2016.
  */
-public class LocationDialog extends DialogFragment {
+public class PhotoLocationDialog extends DialogFragment {
 
     private String path;
     public Callback callback;
 
+    private LatLng location;
+
     public interface Callback{
-        public void SetLocation(String file);
+        public void SetLocation(String file, LatLng points);
     }
 
     @Override
@@ -32,14 +33,14 @@ public class LocationDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.titleDialog);
-        builder.setMessage(R.string.messageDialog);
+        builder.setTitle(R.string.titleLocation);
+        builder.setMessage(R.string.messageLocation);
         builder.setPositiveButton(R.string.setLocation, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // TODO Auto-generated method stub
-                callback.SetLocation(path);
+                callback.SetLocation(path, location);
             }
         });
         builder.setNegativeButton(R.string.currentLocation, new DialogInterface.OnClickListener() {
@@ -59,7 +60,8 @@ public class LocationDialog extends DialogFragment {
         callback = (Callback)activity;
     }
 
-    public void setFile(String file){
+    public void setFile(String file, LatLng location){
         this.path = file;
+        this.location = location;
     }
 }

@@ -19,7 +19,7 @@ public class PhotoMarker {
         marker.title(photo.getName());
         marker.snippet(photo.getDate());
         marker.describeContents();
-        marker.draggable(photo.getType() == Photo.FROM_GALLERY_MANUAL ? true : false);
+        marker.draggable(photo.getType() == Photo.FROM_MANUAL ? true : false);
         marker.position(photo.getLatLng());
         if (new File(photo.getPath()).exists()) {
             marker.icon(BitmapDescriptorFactory

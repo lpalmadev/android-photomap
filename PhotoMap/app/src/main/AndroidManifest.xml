@@ -40,7 +40,11 @@
             android:screenOrientation="portrait" />
         <activity android:name=".ui.PhotoListActivity" />
         <activity android:name=".ui.AboutActivity" />
-        <activity android:name=".ui.PhotoLocationActivity"></activity>
+        <activity android:name=".ui.PhotoLocationActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

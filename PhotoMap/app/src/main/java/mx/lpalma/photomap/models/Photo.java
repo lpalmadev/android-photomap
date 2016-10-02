@@ -14,7 +14,7 @@ public class Photo {
 
     public static final int FROM_CAMERA = 1;
     public static final int FROM_GALLERY = 2;
-    public static final int FROM_GALLERY_MANUAL = 3;
+    public static final int FROM_MANUAL = 3;
 
     int id;
     String path;

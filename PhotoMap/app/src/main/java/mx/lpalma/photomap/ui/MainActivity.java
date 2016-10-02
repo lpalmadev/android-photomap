@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
@@ -35,9 +37,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Toolbar toolbar;
     private GoogleMap mMap;
-    private FloatingActionButton btnAccion;
+    private FloatingActionButton btnAccion, btnCamera, btnGallery;
     private BottomSheetBehavior bottomSheetBehavior;
     private CoordinatorLayout coordinatorLayout;
+
+    private Animation fabOpen, fabClose, fabClockwise, fabAntiClockwise;
+    boolean isFabOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +54,46 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         final View bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         btnAccion = (FloatingActionButton) findViewById(R.id.fab);
+        btnCamera = (FloatingActionButton)  findViewById(R.id.fab_camera);
+        btnGallery = (FloatingActionButton)  findViewById(R.id.fab_gallery);
+
+        fabOpen = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_open);
+        fabClose = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
+        fabClockwise = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_clockwise);
+        fabAntiClockwise = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_anticlockwise);
+
         btnAccion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                if(isFabOpen){
+                    btnCamera.startAnimation(fabClose);
+                    btnGallery.startAnimation(fabClose);
+                    btnAccion.startAnimation(fabAntiClockwise);
+                    btnCamera.setClickable(false);
+                    btnGallery.setClickable(false);
+                    isFabOpen = false;
+                }
+                else{
+                    btnCamera.startAnimation(fabOpen);
+                    btnGallery.startAnimation(fabOpen);
+                    btnAccion.startAnimation(fabClockwise);
+                    btnCamera.setClickable(true);
+                    btnGallery.setClickable(true);
+                    isFabOpen = true;
+                }
+            }
+        });
+
+        btnCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 getActionIntent(TAKE_PICTURE);
+            }
+        });
+        btnGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActionIntent(SELECT_PICTURE);
             }
         });
         //Snackbar snackbar = Snackbar.make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_SHORT);
@@ -87,8 +127,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     updateMap();
                 } else {
                     showDialog(picturePath);
-                    file = new Photo();
-                    file.setPath(picturePath);
+                    //file = new Photo();
+                    //file.setPath(picturePath);
                 }
             } catch (IOException e) {
                 Log.e("ERROR_RESULT", e.getMessage());

@@ -44,6 +44,7 @@
     <string name="action_settings">Settings</string>
     <string name="currentLocation">No</string>
     <string name="setLocation">Yes</string>
+    <string name="action_save">Save</string>
 
 
 </resources>
