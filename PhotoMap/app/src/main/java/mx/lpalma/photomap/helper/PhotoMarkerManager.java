@@ -1,5 +1,6 @@
 package mx.lpalma.photomap.helper;
 
+import android.app.FragmentManager;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import mx.lpalma.photomap.dialog.FileDialog;
 import mx.lpalma.photomap.models.Photo;
 import mx.lpalma.photomap.models.PhotoMarker;
 
@@ -55,21 +57,15 @@ public class PhotoMarkerManager {
         return f.exists();
     }
 
-    /*
     public static void showFailFile(FragmentManager manager) {
         if (fail.size() == 1) {
             FileDialog dialog = new FileDialog();
-            dialog.type = FileDialog.ERROR_FILE;
-            dialog.setMarker(fail.get(0));
             dialog.show(manager, "FILE");
         } else if (fail.size() > 1) {
             FileDialog dialog = new FileDialog();
-            dialog.type = FileDialog.ERROR_FILES;
-            dialog.setListMarker(fail);
             dialog.show(manager, "FILES");
         }
     }
-    */
 
     public  static List<Marker> findDistance(Marker marker) {
         LatLng a = marker.getPosition();

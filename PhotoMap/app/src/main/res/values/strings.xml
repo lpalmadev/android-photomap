@@ -32,8 +32,8 @@
     <!-- Dialogs -->
     <string name="titleDialog">No location found.</string>
     <string name="titleLocation">Confirm location.</string>
-    <string name="titelFile">File not found</string>
-    <string name="titelFiles">No files found</string>
+    <string name="titleFile">File not found</string>
+    <string name="titleFiles">No files found</string>
     <string name="messageFile">Do you want to delete all file info?</string>
     <string name="messageFiles">Do you want to delete file info?</string>
     <string name="messageLocation">Are you sure with the current location?</string>

@@ -20,7 +20,7 @@ import mx.lpalma.photomap.db.PhotoData;
 import mx.lpalma.photomap.dialog.PhotoLocationDialog;
 import mx.lpalma.photomap.models.Photo;
 
-public class PhotoLocationActivity extends AppCompatActivity implements OnMapReadyCallback , GoogleMap.OnMapClickListener, PhotoLocationDialog.Callback{
+public class PhotoLocationActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, PhotoLocationDialog.Callback {
 
     private Toolbar toolbar;
     private GoogleMap mMap;
@@ -52,7 +52,7 @@ public class PhotoLocationActivity extends AppCompatActivity implements OnMapRea
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.accept:
-                if(location != null){
+                if (location != null) {
                     photoLocationDialog.show(getFragmentManager(), "Loc");
                     photoLocationDialog.setFile(filePath, location);
                 }
@@ -86,17 +86,17 @@ public class PhotoLocationActivity extends AppCompatActivity implements OnMapRea
         mMap.addMarker(new MarkerOptions().position(latLng).icon(
                 BitmapDescriptorFactory
                         .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-        Toast.makeText(getApplicationContext(), latLng.toString(),
-                Toast.LENGTH_SHORT).show();
+/*        Toast.makeText(getApplicationContext(), latLng.toString(),
+                Toast.LENGTH_SHORT).show();*/
     }
 
     @Override
     public void SetLocation(String file, LatLng points) {
         Photo photo;
-        try{
-            photo = Photo.create(file,points,Photo.FROM_MANUAL);
+        try {
+            photo = Photo.create(file, points, Photo.FROM_MANUAL);
             new PhotoData().insert(getApplicationContext(), photo);
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("NOT_LOCATION", e.getMessage());
             photo = new Photo();
             photo.setPath(filePath);

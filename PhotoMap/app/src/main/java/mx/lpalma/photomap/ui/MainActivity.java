@@ -7,7 +7,6 @@ import android.provider.MediaStore;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -17,7 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
@@ -25,12 +23,13 @@ import java.io.IOException;
 
 import mx.lpalma.photomap.R;
 import mx.lpalma.photomap.db.PhotoData;
+import mx.lpalma.photomap.dialog.FileDialog;
 import mx.lpalma.photomap.dialog.LocationDialog;
 import mx.lpalma.photomap.helper.PhotoMarkerManager;
 import mx.lpalma.photomap.models.Photo;
 import mx.lpalma.photomap.ui.adapters.PhotoMapInfoAdapter;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, LocationDialog.Callback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, LocationDialog.Callback, FileDialog.Callback {
 
     public static final int TAKE_PICTURE = 100;
     public static final int SELECT_PICTURE = 200;
@@ -54,26 +53,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         final View bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         btnAccion = (FloatingActionButton) findViewById(R.id.fab);
-        btnCamera = (FloatingActionButton)  findViewById(R.id.fab_camera);
-        btnGallery = (FloatingActionButton)  findViewById(R.id.fab_gallery);
+        btnCamera = (FloatingActionButton) findViewById(R.id.fab_camera);
+        btnGallery = (FloatingActionButton) findViewById(R.id.fab_gallery);
 
-        fabOpen = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_open);
-        fabClose = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
-        fabClockwise = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_clockwise);
-        fabAntiClockwise = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_anticlockwise);
+        fabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        fabClockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_clockwise);
+        fabAntiClockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_anticlockwise);
 
         btnAccion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isFabOpen){
+                if (isFabOpen) {
                     btnCamera.startAnimation(fabClose);
                     btnGallery.startAnimation(fabClose);
                     btnAccion.startAnimation(fabAntiClockwise);
                     btnCamera.setClickable(false);
                     btnGallery.setClickable(false);
                     isFabOpen = false;
-                }
-                else{
+                } else {
                     btnCamera.startAnimation(fabOpen);
                     btnGallery.startAnimation(fabOpen);
                     btnAccion.startAnimation(fabClockwise);
@@ -96,8 +94,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 getActionIntent(SELECT_PICTURE);
             }
         });
-        //Snackbar snackbar = Snackbar.make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_SHORT);
-        //snackbar.show();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
@@ -127,8 +123,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     updateMap();
                 } else {
                     showDialog(picturePath);
-                    //file = new Photo();
-                    //file.setPath(picturePath);
                 }
             } catch (IOException e) {
                 Log.e("ERROR_RESULT", e.getMessage());
@@ -165,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.clear();
         PhotoMarkerManager.addPhotos(new PhotoData().getAll(getApplicationContext()));
         PhotoMarkerManager.showMarkers(mMap);
+        PhotoMarkerManager.showFailFile(this.getFragmentManager());
     }
 
     private void getActionIntent(int requestCode) {
@@ -204,5 +199,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 PhotoLocationActivity.class);
         intent.putExtra("file", file);
         startActivity(intent);
+    }
+
+    @Override
+    public void UpdateFiles() {
+        for (Photo photo : PhotoMarkerManager.fail) {
+            new PhotoData().delete(getApplicationContext(), photo);
+        }
+        PhotoMarkerManager.fail.clear();
+        updateMap();
     }
 }
