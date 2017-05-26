@@ -1,12 +1,17 @@
 package mx.lpalma.photomap.ui;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +26,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 
 import java.io.IOException;
 
+import mx.lpalma.photomap.Manifest;
 import mx.lpalma.photomap.R;
 import mx.lpalma.photomap.db.PhotoData;
 import mx.lpalma.photomap.dialog.FileDialog;
@@ -165,14 +171,55 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void getActionIntent(int requestCode) {
         Intent intent = null;
         if (requestCode == TAKE_PICTURE) {
-            intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(intent, TAKE_PICTURE);
+            if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+            {
+                intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(intent, TAKE_PICTURE);
+                }
+            }else{
+                ActivityCompat.requestPermissions(this, new String[] {android.Manifest.permission.CAMERA},TAKE_PICTURE);
+                //ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.CAMERA);
+
+                /*if(ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.CAMERA)) {
+                }
+                else {
+                    ActivityCompat.requestPermissions(this, new String[] {android.Manifest.permission.CAMERA},TAKE_PICTURE);
+                }*/
             }
         } else if (requestCode == SELECT_PICTURE) {
             intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivityForResult(intent, SELECT_PICTURE);
+            }
+        }
+    }
+
+    public void checkPermission()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkPermission();
+
+        } else {
+            // write your logic here
+        }
+        String[] permissions = new String[3];
+        if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            permissions[0] = android.Manifest.permission.CAMERA;
+        if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            permissions[1] = android.Manifest.permission.ACCESS_FINE_LOCATION;
+        if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            permissions[3] = android.Manifest.permission.READ_EXTERNAL_STORAGE;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.i("PERMISO", requestCode + "");
+        switch (requestCode){
+            case TAKE_PICTURE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    getActionIntent(TAKE_PICTURE);
+                return;
             }
         }
     }
